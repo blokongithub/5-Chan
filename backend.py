@@ -1,36 +1,64 @@
-import random
 import sqlite3
-import os
 
-dbcon = sqlite3.connect("database.db")
-mydb = dbcon.cursor()
+def get_db_connection():
+    return sqlite3.connect("database.db")
 
 def start():
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
     mydb.execute("CREATE TABLE IF NOT EXISTS chans(id INTEGER PRIMARY KEY AUTOINCREMENT, link TEXT, name TEXT, isprivate INTEGER, password TEXT)")
     mydb.execute("CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY AUTOINCREMENT, chan INTEGER, title TEXT, body TEXT)")
     dbcon.commit()
-    
-def deldb(filename):
-    os.remove(filename)
-    
+    dbcon.close()
 
 def makepost(chan, title, body):
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
     mydb.execute("INSERT INTO posts(chan, title, body) VALUES(?, ?, ?)", (chan, title, body))
     dbcon.commit()
+    dbcon.close()
 
 def makechan(link, name, private="0", code="0"):
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
     mydb.execute("INSERT INTO chans(link, name, isprivate, password) VALUES (?, ?, ?, ?)", (link, name, private, code))
     dbcon.commit()
-    
+    dbcon.close()
+
 def delchan(id):
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
     mydb.execute("DELETE FROM chans WHERE id = ?", (id,))
     dbcon.commit()
-    
-def delchan(id):
+    dbcon.close()
+
+def delpost(id):
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
     mydb.execute("DELETE FROM posts WHERE id = ?", (id,))
     dbcon.commit()
-    
+    dbcon.close()
+
 def panicattack():
-    mydb.execute("DROP TABLE chans")
-    mydb.execute("DROP TABLE posts")
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
+    mydb.execute("DROP TABLE IF EXISTS chans")
+    mydb.execute("DROP TABLE IF EXISTS posts")
     dbcon.commit()
+    dbcon.close()
+
+def getchans():
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
+    res = mydb.execute("SELECT * FROM chans")
+    chans = res.fetchall()
+    dbcon.close()
+    return chans
+
+def getposts(chan):
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
+    res = mydb.execute("SELECT * FROM posts WHERE chan = ?", (chan,))
+    posts = res.fetchall()
+    dbcon.close()
+    return posts

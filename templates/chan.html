@@ -1,0 +1,23 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic 4chan Clone</title>
+</head>
+<body>
+    <h1>Dynamic 4chan Clone</h1>
+    <div>
+        <h2>Posts</h2>
+        <ul>
+            {% for post in posts %}
+            <li>
+                <strong>{{ post[1] }}</strong>: {{ post[3] }} <!-- Adjust indices according to your tuple structure -->
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
