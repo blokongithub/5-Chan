@@ -1,20 +1,36 @@
-import time
 import random
-import mysql.connector
+import sqlite3
+import os
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Yeet1234!",
-    auth_plugin='mysql_native_password',
-    database="chanclone"
-)
-mycursor = mydb.cursor()
+dbcon = sqlite3.connect("database.db")
+mydb = dbcon.cursor()
 
-def makepost(title, body, chan):
-    mycursor.execute("INSERT INTO `chanclone`.`posts` (`id`, `boardID`, `title`, `body`, `timestamp`) VALUES ('" + str(random.randint(1,1000000000000000)) + "', '" + str(chan) + "', '" + title + "', '" + body +"', '"+ str(time.time()) + "');")
-    mydb.commit()
-def makechan(link, name, private="0", code="0"):
-    mycursor.execute("INSERT INTO `chanclone`.`chans` (`id`, `hlink`, `name`, `isPrivate`, `password`) VALUES ('" + str(random.randint(1,1000000000000000)) + "', '" + link + "', '" + name + "', '" + private +"', '"+ code + "');")
-    mydb.commit()
+def start():
+    mydb.execute("CREATE TABLE IF NOT EXISTS chans(id INTEGER PRIMARY KEY AUTOINCREMENT, link TEXT, name TEXT, isprivate INTEGER, password TEXT)")
+    mydb.execute("CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY AUTOINCREMENT, chan INTEGER, title TEXT, body TEXT)")
+    dbcon.commit()
     
+def deldb(filename):
+    os.remove(filename)
+    
+
+def makepost(chan, title, body):
+    mydb.execute("INSERT INTO posts(chan, title, body) VALUES(?, ?, ?)", (chan, title, body))
+    dbcon.commit()
+
+def makechan(link, name, private="0", code="0"):
+    mydb.execute("INSERT INTO chans(link, name, isprivate, password) VALUES (?, ?, ?, ?)", (link, name, private, code))
+    dbcon.commit()
+    
+def delchan(id):
+    mydb.execute("DELETE FROM chans WHERE id = ?", (id,))
+    dbcon.commit()
+    
+def delchan(id):
+    mydb.execute("DELETE FROM posts WHERE id = ?", (id,))
+    dbcon.commit()
+    
+def panicattack():
+    mydb.execute("DROP TABLE chans")
+    mydb.execute("DROP TABLE posts")
+    dbcon.commit()
