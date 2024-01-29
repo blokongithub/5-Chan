@@ -14,22 +14,45 @@ def makepost():
     
     return 'post has been made'
 
-@app.route("/makechan")
+@app.route("/makechan", methods=["POST"])
 def makechan():
     link = request.form.get("link")
     name = request.form.get("name")
     private = request.form.get("private")
     code = request.form.get("password")
     
-    backend.makechan(link=link, name=name, private=private, code=code)
+    devpassword = request.form.get("secret")
     
-    return "chan has been made"
+    if devpassword == "5chanclone1234!":
+        backend.makechan(link=link, name=name, private=private, code=code)
+        ret = "chan has been made"
+    else:
+        ret = "back off hacker"
+        
+    return ret
 
-@app.route("/chan")
-def fetchchan():
+@app.route("/delchan", methods=["POST"])
+def delchan():
+    chan = request.form.get("chan")
     
-    data = backend.getposts("test")
-    return render_template("chan.html", posts=data)
+    devpassword = request.form.get("secret")
+    
+    if devpassword == "5chanclone1234!":
+        backend.delchan(chan=chan)
+        ret = "chan has been deleted"
+    else:
+        ret = "back off hacker"
+        
+    return ret
+
+@app.route("/chan/<chan>")
+def fetchchan(chan):
+    
+    data = backend.getposts(chan=chan)
+    if data != []:
+        return render_template("chan.html", posts=data)
+    else:
+        return  ("Chan does not exist")
 
 if __name__ == '__main__':
     backend.start()
