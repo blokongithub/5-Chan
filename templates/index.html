@@ -1,0 +1,20 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 chan home</title>
+</head>
+<body>
+    <div>
+        <h2>List of chans</h2>
+        <ul>
+            {% for chan in chans %}
+            <li>
+                <strong>{{chan[2]}}</strong> - <a href=chan/{{chan[1]}}>link to {{chan[2]}}</a>
+                
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

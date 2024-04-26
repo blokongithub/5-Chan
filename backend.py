@@ -7,7 +7,7 @@ def start():
     dbcon = get_db_connection()
     mydb = dbcon.cursor()
     mydb.execute("CREATE TABLE IF NOT EXISTS chans(id INTEGER PRIMARY KEY AUTOINCREMENT, link TEXT, name TEXT, isprivate INTEGER, password TEXT)")
-    mydb.execute("CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY AUTOINCREMENT, chan INTEGER, title TEXT, body TEXT)")
+    mydb.execute("CREATE TABLE IF NOT EXISTS posts(id INTEGER PRIMARY KEY AUTOINCREMENT, chan TEXT, title TEXT, body TEXT)")
     dbcon.commit()
     dbcon.close()
 
@@ -54,6 +54,15 @@ def getchans():
     chans = res.fetchall()
     dbcon.close()
     return chans
+
+def getchansid():
+    dbcon = get_db_connection()
+    mydb = dbcon.cursor()
+    res = mydb.execute("SELECT link FROM chans")
+    chans = res.fetchall()
+    dbcon.close()
+    result = [item[0] for item in chans]
+    return result
 
 def getposts(chan):
     dbcon = get_db_connection()
