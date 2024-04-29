@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin tool</title>
+</head>
+<body>
+    <form method="POST">
+        <label for="id">id<br>
+        <input type="number" id="id" name="id"><br>
+        <label for="password">password<br>
+        <input type="text" id="password" name="password"><br>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
+    <br>
+    <li>
+        {% for r in req %}
+            <li>
+                <strong>id: {{ r[0] }}:</strong>
+                <p>name: {{ r[1] }}</p>
+                <p>link: {{ r[2] }}</p>
+                <p>reason: {{ r[3] }}</p>
+                
+            </li>
+        {% endfor %}
+    </li>
+</body>

@@ -4,7 +4,6 @@ import hashlib
 
 app = Flask(__name__)
 
-
 @app.route("/makepost", methods=['GET', 'POST'])
 def makepost():
     if request.method == "POST":
@@ -61,6 +60,7 @@ def fetchchan(chan):
     
     data = backend.getposts(chan=chan)
     chans = backend.getchansid()
+    print(chan, chans)
     if chan in chans:
         return render_template("chan.html", posts=data, chan=backend.chanidtoname(chan))
     else:
@@ -80,6 +80,33 @@ def indexy2():
 def admin():
     return render_template("admin.html")
 
+@app.route("/requestchan", methods=["GET", "POST"])
+def requestchan():
+    if request.method == "GET":
+        return render_template("requestchan.html")
+    else:
+        name = request.form.get("name")
+        link = request.form.get("link")
+        reason = request.form.get("reason")
+        backend.requestchan(name, link, reason)
+        return ("chan requested")
+
+@app.route("/acceptchan", methods=["GET", "POST"])
+def acceptchan():
+    if request.method == "GET":
+        res=backend.getreq()
+        return render_template("requestsubmissions.html", req=res)
+    else:
+        devpassword = request.form.get("password")
+        password = hashlib.md5(devpassword.encode())
+        password = password.hexdigest()
+        if password == "e0d1e169daaa03df020a8aa6172becd0":
+            id = request.form.get("id")
+            backend.makeformchan(id)
+            return "made chan"
+        else:
+            return "back off hacker"
+    
 if __name__ == '__main__':
     backend.start()
     app.run(debug=True)
