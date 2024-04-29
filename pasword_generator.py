@@ -10,5 +10,3 @@ result = hashlib.md5(str2hash.encode())
 # printing the equivalent hexadecimal value.
 print("The hexadecimal equivalent of hash is : ", end ="")
 print(result.hexdigest())
-
-#hashcat -a 3 -m 0 e0d1e169daaa03df020a8aa6172becd0
